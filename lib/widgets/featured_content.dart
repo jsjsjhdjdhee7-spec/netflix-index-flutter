@@ -9,7 +9,9 @@ import '../models/tv_show.dart';
 import '../screens/video/video_player_screen.dart';
 
 class FeaturedContent extends StatelessWidget {
-  const FeaturedContent({super.key});
+  final String contentType;
+  
+  const FeaturedContent({super.key, this.contentType = 'mixed'});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,19 @@ class FeaturedContent extends StatelessWidget {
     
     return Consumer<ContentProvider>(
       builder: (context, contentProvider, child) {
-        final featuredItems = contentProvider.featuredContent;
+        List<dynamic> featuredItems = [];
+        
+        if (contentType == 'tv') {
+          featuredItems = contentProvider.trendingTvShows.take(5).toList();
+        } else if (contentType == 'movie') {
+          featuredItems = contentProvider.trendingMovies.take(5).toList();
+        } else {
+          // Mixed content
+          featuredItems = [
+            ...contentProvider.trendingMovies.take(3),
+            ...contentProvider.trendingTvShows.take(2),
+          ];
+        }
         
         if (featuredItems.isEmpty) {
           return const SizedBox(

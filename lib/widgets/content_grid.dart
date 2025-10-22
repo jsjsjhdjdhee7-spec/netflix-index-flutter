@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_constants.dart';
-import '../screens/video/video_player_screen.dart';
+import '../screens/details/content_details_screen.dart';
 
 class ContentGrid extends StatelessWidget {
   final List<Map<String, dynamic>> items;
@@ -17,24 +17,23 @@ class ContentGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (items.isEmpty) {
-      return const SizedBox.shrink();
+      return const SliverToBoxAdapter(child: SizedBox.shrink());
     }
 
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+    return SliverGrid(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount,
         childAspectRatio: 0.7,
         crossAxisSpacing: 8,
         mainAxisSpacing: 8,
       ),
-      itemCount: items.length,
-      itemBuilder: (context, index) {
-        final item = items[index];
-        return _buildGridItem(context, item);
-      },
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          final item = items[index];
+          return _buildGridItem(context, item);
+        },
+        childCount: items.length,
+      ),
     );
   }
 
@@ -150,10 +149,9 @@ class ContentGrid extends StatelessWidget {
   void _onItemTap(BuildContext context, int id, String type, String title) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => VideoPlayerScreen(
+        builder: (context) => ContentDetailsScreen(
           contentId: id,
           contentType: type,
-          title: title,
         ),
       ),
     );

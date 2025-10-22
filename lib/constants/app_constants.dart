@@ -3,7 +3,7 @@ class AppConstants {
   static const String tmdbBaseUrl = 'https://api.themoviedb.org/3';
   static const String tmdbImageBaseUrl = 'https://image.tmdb.org/t/p/w500';
   static const String tmdbOriginalImageBaseUrl = 'https://image.tmdb.org/t/p/original';
-  static const String tmdbAccessToken = 'YOUR_TMDB_ACCESS_TOKEN_HEAR';
+  static const String tmdbAccessToken = 'YOUR_TMDB_ACCESS_TOKEN_HERE';
   
   // SuperEmbed
   static const String superEmbedBaseUrl = 'https://multiembed.mov';

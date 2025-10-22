@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">multiembed.mov</domain>
+        <domain includeSubdomains="true">vidsrc.to</domain>
+        <domain includeSubdomains="true">embed.su</domain>
+        <domain includeSubdomains="true">player.smashy.stream</domain>
+        <domain includeSubdomains="true">vidlink.pro</domain>
+        <domain includeSubdomains="true">youtube.com</domain>
+        <domain includeSubdomains="true">googleapis.com</domain>
+        <domain includeSubdomains="true">themoviedb.org</domain>
+        <domain includeSubdomains="true">image.tmdb.org</domain>
+    </domain-config>
+</network-security-config>

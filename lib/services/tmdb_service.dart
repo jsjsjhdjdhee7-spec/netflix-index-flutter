@@ -167,4 +167,245 @@ class TMDBService {
     
     return tvShows;
   }
+
+  // Content Details (Generic for both movies and TV shows)
+  static Future<Map<String, dynamic>> getContentDetails(int contentId, String contentType, {String language = 'ar'}) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/$contentType/$contentId?language=$language'),
+        headers: _headers,
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      }
+    } catch (e) {
+      print('Error getting content details: $e');
+    }
+    return {};
+  }
+
+  // Get Cast and Crew
+  static Future<List<Map<String, dynamic>>> getContentCredits(int contentId, String contentType) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/$contentType/$contentId/credits'),
+        headers: _headers,
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return List<Map<String, dynamic>>.from(data['cast'] ?? []);
+      }
+    } catch (e) {
+      print('Error getting content credits: $e');
+    }
+    return [];
+  }
+
+  // Get Similar Content
+  static Future<List<Map<String, dynamic>>> getSimilarContent(int contentId, String contentType, {String language = 'ar'}) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/$contentType/$contentId/similar?language=$language'),
+        headers: _headers,
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return List<Map<String, dynamic>>.from(data['results'] ?? []);
+      }
+    } catch (e) {
+      print('Error getting similar content: $e');
+    }
+    return [];
+  }
+
+  // Get Videos (Trailers, etc.)
+  static Future<List<Map<String, dynamic>>> getContentVideos(int contentId, String contentType) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/$contentType/$contentId/videos'),
+        headers: _headers,
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return List<Map<String, dynamic>>.from(data['results'] ?? []);
+      }
+    } catch (e) {
+      print('Error getting content videos: $e');
+    }
+    return [];
+  }
+
+  // Get Popular TV Shows with pagination
+  static Future<List<TvShow>> getPopularTvShows({String language = 'ar', int page = 1}) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/tv/popular?language=$language&page=$page'),
+        headers: _headers,
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final results = data['results'] as List;
+        return results.map((json) => TvShow.fromJson(json)).toList();
+      }
+    } catch (e) {
+      print('Error getting popular TV shows: $e');
+    }
+    return [];
+  }
+
+  // Get Top Rated TV Shows with pagination
+  static Future<List<TvShow>> getTopRatedTvShows({String language = 'ar', int page = 1}) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/tv/top_rated?language=$language&page=$page'),
+        headers: _headers,
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final results = data['results'] as List;
+        return results.map((json) => TvShow.fromJson(json)).toList();
+      }
+    } catch (e) {
+      print('Error getting top rated TV shows: $e');
+    }
+    return [];
+  }
+
+  // Get On The Air TV Shows with pagination
+  static Future<List<TvShow>> getOnTheAirTvShows({String language = 'ar', int page = 1}) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/tv/on_the_air?language=$language&page=$page'),
+        headers: _headers,
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final results = data['results'] as List;
+        return results.map((json) => TvShow.fromJson(json)).toList();
+      }
+    } catch (e) {
+      print('Error getting on the air TV shows: $e');
+    }
+    return [];
+  }
+
+  // Get Airing Today TV Shows with pagination
+  static Future<List<TvShow>> getAiringTodayTvShows({String language = 'ar', int page = 1}) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/tv/airing_today?language=$language&page=$page'),
+        headers: _headers,
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final results = data['results'] as List;
+        return results.map((json) => TvShow.fromJson(json)).toList();
+      }
+    } catch (e) {
+      print('Error getting airing today TV shows: $e');
+    }
+    return [];
+  }
+
+  // Get Popular Movies with pagination
+  static Future<List<Movie>> getPopularMovies({String language = 'ar', int page = 1}) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/movie/popular?language=$language&page=$page'),
+        headers: _headers,
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final results = data['results'] as List;
+        return results.map((json) => Movie.fromJson(json)).toList();
+      }
+    } catch (e) {
+      print('Error getting popular movies: $e');
+    }
+    return [];
+  }
+
+  // Get Top Rated Movies with pagination
+  static Future<List<Movie>> getTopRatedMovies({String language = 'ar', int page = 1}) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/movie/top_rated?language=$language&page=$page'),
+        headers: _headers,
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final results = data['results'] as List;
+        return results.map((json) => Movie.fromJson(json)).toList();
+      }
+    } catch (e) {
+      print('Error getting top rated movies: $e');
+    }
+    return [];
+  }
+
+  // Get Now Playing Movies with pagination
+  static Future<List<Movie>> getNowPlayingMovies({String language = 'ar', int page = 1}) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/movie/now_playing?language=$language&page=$page'),
+        headers: _headers,
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final results = data['results'] as List;
+        return results.map((json) => Movie.fromJson(json)).toList();
+      }
+    } catch (e) {
+      print('Error getting now playing movies: $e');
+    }
+    return [];
+  }
+
+  // Get Upcoming Movies with pagination
+  static Future<List<Movie>> getUpcomingMovies({String language = 'ar', int page = 1}) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/movie/upcoming?language=$language&page=$page'),
+        headers: _headers,
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final results = data['results'] as List;
+        return results.map((json) => Movie.fromJson(json)).toList();
+      }
+    } catch (e) {
+      print('Error getting upcoming movies: $e');
+    }
+    return [];
+  }
+
+  // Get Recommendations
+  static Future<List<Map<String, dynamic>>> getContentRecommendations(int contentId, String contentType, {String language = 'ar'}) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/$contentType/$contentId/recommendations?language=$language'),
+        headers: _headers,
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return List<Map<String, dynamic>>.from(data['results'] ?? []);
+      }
+    } catch (e) {
+      print('Error getting content recommendations: $e');
+    }
+    return [];
+  }
 }

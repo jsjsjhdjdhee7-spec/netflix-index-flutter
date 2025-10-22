@@ -21,49 +21,130 @@ class _LoginScreenState extends State<LoginScreen> {
     final localizations = AppLocalizations.of(context)!;
     
     return Scaffold(
-      backgroundColor: AppColors.netflixBlack,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Spacer(),
-              
-              // Netflix Logo
-              const NetflixLogo(size: 120),
-              
-              const SizedBox(height: 60),
-              
-              // Welcome Text
-              Text(
-                localizations.welcome,
-                style: const TextStyle(
-                  color: AppColors.netflixWhite,
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFF000000),
+              Color(0xFF1a1a1a),
+              Color(0xFF000000),
+            ],
+          ),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Spacer(),
+                
+                // Netflix Logo with animation
+                TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0.0, end: 1.0),
+                  duration: const Duration(milliseconds: 1500),
+                  builder: (context, value, child) {
+                    return Transform.scale(
+                      scale: value,
+                      child: Opacity(
+                        opacity: value,
+                        child: const NetflixLogo(size: 120),
+                      ),
+                    );
+                  },
                 ),
-                textAlign: TextAlign.center,
-              ),
+                
+                const SizedBox(height: 60),
+                
+                // Welcome Text with fade animation
+                TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0.0, end: 1.0),
+                  duration: const Duration(milliseconds: 2000),
+                  builder: (context, value, child) {
+                    return Opacity(
+                      opacity: value,
+                      child: Transform.translate(
+                        offset: Offset(0, 20 * (1 - value)),
+                        child: Text(
+                          localizations.welcome,
+                          style: const TextStyle(
+                            color: AppColors.netflixWhite,
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                
+                const SizedBox(height: 16),
+                
+                // Subtitle
+                TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0.0, end: 1.0),
+                  duration: const Duration(milliseconds: 2500),
+                  builder: (context, value, child) {
+                    return Opacity(
+                      opacity: value,
+                      child: Text(
+                        'Unlimited movies, TV shows, and more.',
+                        style: TextStyle(
+                          color: AppColors.netflixGray,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    );
+                  },
+                ),
+                
+                const SizedBox(height: 60),
               
-              const SizedBox(height: 40),
-              
-              // Google Sign In Button
-              _buildSignInButton(
-                onPressed: _isLoading ? null : _signInWithGoogle,
-                text: localizations.signInWithGoogle,
-                icon: Icons.login,
-                color: AppColors.netflixRed,
+              // Google Sign In Button with animation
+              TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0.0, end: 1.0),
+                duration: const Duration(milliseconds: 3000),
+                builder: (context, value, child) {
+                  return Opacity(
+                    opacity: value,
+                    child: Transform.translate(
+                      offset: Offset(0, 30 * (1 - value)),
+                      child: _buildSignInButton(
+                        onPressed: _isLoading ? null : _signInWithGoogle,
+                        text: localizations.signInWithGoogle,
+                        icon: Icons.login,
+                        color: AppColors.netflixRed,
+                      ),
+                    ),
+                  );
+                },
               ),
               
               const SizedBox(height: 16),
               
-              // Guest Button
-              _buildSignInButton(
-                onPressed: _isLoading ? null : _signInAsGuest,
-                text: localizations.continueAsGuest,
-                icon: Icons.person,
-                color: AppColors.netflixGray,
+              // Guest Button with animation
+              TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0.0, end: 1.0),
+                duration: const Duration(milliseconds: 3500),
+                builder: (context, value, child) {
+                  return Opacity(
+                    opacity: value,
+                    child: Transform.translate(
+                      offset: Offset(0, 30 * (1 - value)),
+                      child: _buildSignInButton(
+                        onPressed: _isLoading ? null : _signInAsGuest,
+                        text: localizations.continueAsGuest,
+                        icon: Icons.person,
+                        color: AppColors.netflixGray,
+                      ),
+                    ),
+                  );
+                },
               ),
               
               const Spacer(),
@@ -73,7 +154,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 const CircularProgressIndicator(
                   color: AppColors.netflixRed,
                 ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -86,26 +168,55 @@ class _LoginScreenState extends State<LoginScreen> {
     required IconData icon,
     required Color color,
   }) {
-    return SizedBox(
+    return Container(
       width: double.infinity,
       height: 56,
-      child: ElevatedButton.icon(
-        onPressed: onPressed,
-        icon: Icon(icon, color: AppColors.netflixWhite),
-        label: Text(
-          text,
-          style: const TextStyle(
-            color: AppColors.netflixWhite,
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-          ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        gradient: LinearGradient(
+          colors: [
+            color,
+            color.withOpacity(0.8),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: color,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: color.withOpacity(0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
           ),
-          elevation: 0,
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  color: AppColors.netflixWhite,
+                  size: 24,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  text,
+                  style: const TextStyle(
+                    color: AppColors.netflixWhite,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

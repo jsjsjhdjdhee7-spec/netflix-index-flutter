@@ -8,8 +8,11 @@ import '../../widgets/netflix_logo.dart';
 
 import '../../widgets/content_row.dart';
 import '../../widgets/featured_content.dart';
+import '../../widgets/hero_video_player.dart';
 import '../search/search_screen.dart';
 import '../profile/profile_screen.dart';
+import '../tv_shows/tv_shows_screen.dart';
+import '../content/see_all_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -62,6 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         children: [
           _buildHomePage(),
+          const TvShowsScreen(),
           const SearchScreen(),
           _buildMyListPage(),
           const ProfileScreen(),
@@ -80,8 +84,18 @@ class _HomeScreenState extends State<HomeScreen> {
         SliverToBoxAdapter(
           child: Column(
             children: [
-              // Featured Content
-              const FeaturedContent(),
+              // Hero Video Player
+              Consumer<ContentProvider>(
+                builder: (context, contentProvider, child) {
+                  if (contentProvider.featuredMovies.isNotEmpty) {
+                    return HeroVideoPlayer(
+                      content: contentProvider.featuredMovies.first.toJson(),
+                      contentType: 'movie',
+                    );
+                  }
+                  return const FeaturedContent();
+                },
+              ),
               
               const SizedBox(height: 20),
               
@@ -108,11 +122,16 @@ class _HomeScreenState extends State<HomeScreen> {
               // Popular Movies
               Consumer<ContentProvider>(
                 builder: (context, contentProvider, child) {
-                  return ContentRow(
+                  return _buildContentRowWithSeeAll(
                     title: localizations.popularMovies,
                     items: contentProvider.popularMovies
                         .map((movie) => movie.toJson()..['type'] = 'movie')
                         .toList(),
+                    onSeeAllTap: () => _navigateToSeeAll(
+                      localizations.popularMovies,
+                      'movie',
+                      'popular',
+                    ),
                   );
                 },
               ),
@@ -120,11 +139,16 @@ class _HomeScreenState extends State<HomeScreen> {
               // Trending Movies
               Consumer<ContentProvider>(
                 builder: (context, contentProvider, child) {
-                  return ContentRow(
+                  return _buildContentRowWithSeeAll(
                     title: localizations.trendingMovies,
                     items: contentProvider.trendingMovies
                         .map((movie) => movie.toJson()..['type'] = 'movie')
                         .toList(),
+                    onSeeAllTap: () => _navigateToSeeAll(
+                      localizations.trendingMovies,
+                      'movie',
+                      'trending',
+                    ),
                   );
                 },
               ),
@@ -132,11 +156,16 @@ class _HomeScreenState extends State<HomeScreen> {
               // Popular TV Shows
               Consumer<ContentProvider>(
                 builder: (context, contentProvider, child) {
-                  return ContentRow(
+                  return _buildContentRowWithSeeAll(
                     title: localizations.popularTvShows,
                     items: contentProvider.popularTvShows
                         .map((show) => show.toJson()..['type'] = 'tv')
                         .toList(),
+                    onSeeAllTap: () => _navigateToSeeAll(
+                      localizations.popularTvShows,
+                      'tv',
+                      'popular',
+                    ),
                   );
                 },
               ),
@@ -144,11 +173,16 @@ class _HomeScreenState extends State<HomeScreen> {
               // Top Rated Movies
               Consumer<ContentProvider>(
                 builder: (context, contentProvider, child) {
-                  return ContentRow(
+                  return _buildContentRowWithSeeAll(
                     title: localizations.topRatedMovies,
                     items: contentProvider.topRatedMovies
                         .map((movie) => movie.toJson()..['type'] = 'movie')
                         .toList(),
+                    onSeeAllTap: () => _navigateToSeeAll(
+                      localizations.topRatedMovies,
+                      'movie',
+                      'top_rated',
+                    ),
                   );
                 },
               ),
@@ -156,11 +190,16 @@ class _HomeScreenState extends State<HomeScreen> {
               // Trending TV Shows
               Consumer<ContentProvider>(
                 builder: (context, contentProvider, child) {
-                  return ContentRow(
+                  return _buildContentRowWithSeeAll(
                     title: localizations.trendingTvShows,
                     items: contentProvider.trendingTvShows
                         .map((show) => show.toJson()..['type'] = 'tv')
                         .toList(),
+                    onSeeAllTap: () => _navigateToSeeAll(
+                      localizations.trendingTvShows,
+                      'tv',
+                      'trending',
+                    ),
                   );
                 },
               ),
@@ -319,6 +358,10 @@ class _HomeScreenState extends State<HomeScreen> {
           label: localizations.home,
         ),
         BottomNavigationBarItem(
+          icon: const Icon(Icons.tv),
+          label: 'TV Shows',
+        ),
+        BottomNavigationBarItem(
           icon: const Icon(Icons.search),
           label: localizations.search,
         ),
@@ -331,6 +374,72 @@ class _HomeScreenState extends State<HomeScreen> {
           label: localizations.profile,
         ),
       ],
+    );
+  }
+
+  Widget _buildContentRowWithSeeAll({
+    required String title,
+    required List<Map<String, dynamic>> items,
+    required VoidCallback onSeeAllTap,
+  }) {
+    if (items.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  color: AppColors.netflixWhite,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              GestureDetector(
+                onTap: onSeeAllTap,
+                child: Row(
+                  children: [
+                    Text(
+                      'See All',
+                      style: const TextStyle(
+                        color: AppColors.netflixRed,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    const Icon(
+                      Icons.arrow_forward_ios,
+                      color: AppColors.netflixRed,
+                      size: 12,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        ContentRow(title: '', items: items),
+      ],
+    );
+  }
+
+  void _navigateToSeeAll(String title, String contentType, String category) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => SeeAllScreen(
+          title: title,
+          contentType: contentType,
+          category: category,
+        ),
+      ),
     );
   }
 }

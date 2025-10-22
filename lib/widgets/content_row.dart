@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_constants.dart';
-import '../screens/video/video_player_screen.dart';
+import '../screens/details/content_details_screen.dart';
 
 class ContentRow extends StatelessWidget {
   final String title;
@@ -140,7 +140,7 @@ class ContentRow extends StatelessWidget {
   void _onItemTap(BuildContext context, int id, String type, String title) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => VideoPlayerScreen(
+        builder: (context) => ContentDetailsScreen(
           contentId: id,
           contentType: type,
           title: title,
